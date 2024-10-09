@@ -1,0 +1,34 @@
+FROM python:latest
+
+# Any working directory can be chosen as per choice like '/' or '/home' etc
+# i have chosen /usr/app/src
+WORKDIR /usr/app/src
+RUN apt-get update && apt-get install -y cron
+
+
+#to COPY the remote file at working directory in container
+COPY helpers.py ./
+COPY nltktraining.py ./
+COPY nltkprediction.py ./ 
+COPY cronfile /etc/cron.d/cronfile
+#COPY cronfile ./
+# Now the structure looks like this '/usr/app/src/test.py'
+
+
+#CMD instruction should be used to run the software
+#contained by your image, along with any arguments.
+RUN pip install pandas
+RUN pip install tensorflow
+RUN pip install scikit-learn
+RUN pip install pymongo
+RUN pip install nltk
+RUN chmod 0744 ./nltktraining.py
+RUN chmod 0744 ./nltkprediction.py
+#RUN chmod 0644 ./cronfile
+#RUN crontab ./cronfile
+RUN chmod a+x /etc/cron.d/cronfile
+RUN crontab /etc/cron.d/cronfile
+RUN touch /var/log/cron.log
+#CMD ["cron","-f","-l","2"]
+CMD cron && tail -f /var/log/cron.log
+#CMD which python

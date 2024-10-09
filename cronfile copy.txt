@@ -1,0 +1,4 @@
+#crontab
+38 12 * * 2    /usr/local/bin/python /usr/app/src/nltktraining.py >> /var/log/cron.log 2>&1
+*/5 * * * *  /usr/local/bin/python /usr/app/src/nltkprediction.py >> /var/log/cron.log 2>&1
+#end of line 
